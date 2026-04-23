@@ -24,11 +24,48 @@ class Database {
           password: uri.userInfo.split(':')[1],
           port: uri.port != 0 ? uri.port : 5432,
         ),
-        settings: ConnectionSettings(sslMode: SslMode.require),
+        settings: ConnectionSettings(
+          sslMode: SslMode.require,
+          connectTimeout: Duration(seconds: 30),
+        ),
       );
       print('Conexão com o NeonDB estabelecida com sucesso!');
+
+      await inicializarTabelas();
+      
     } catch (e) {
       print('Erro ao conectar no banco de dados: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> inicializarTabelas() async {
+    print('Verificando banco de dados...');
+
+    try {
+      await connection.execute('''
+        CREATE TABLE IF NOT EXISTS marcas (
+          id SERIAL PRIMARY KEY,
+          nome VARCHAR(255) NOT NULL
+        );
+      ''');
+
+      await connection.execute('''
+        CREATE TABLE IF NOT EXISTS produtos (
+          id SERIAL PRIMARY KEY,
+          nome VARCHAR(255) NOT NULL,
+          categoria VARCHAR(255) NOT NULL,
+          preco NUMERIC(10,2) NOT NULL,
+          marcaId INT NOT NULL,
+          CONSTRAINT fk_marca 
+            FOREIGN KEY(marcaId) 
+            REFERENCES marcas(id)
+        );
+      ''');
+
+      print('Tabelas inicializadas com sucesso!');
+    } catch (e) {
+      print('Erro ao criar tabelas: $e');
       rethrow;
     }
   }

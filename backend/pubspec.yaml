@@ -6,11 +6,13 @@ environment:
   sdk: ^3.11.1
 
 dependencies:
+  dart_jsonwebtoken: ^3.4.1
   dotenv: ^4.2.0
   path: ^1.9.0
   postgres: ^3.5.9
   shelf: ^1.4.2
   shelf_router: ^1.1.4
+  http: ^1.6.0 #PRECISA???
 
 dev_dependencies:
   lints: ^6.1.0
