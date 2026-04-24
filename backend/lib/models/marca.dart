@@ -17,7 +17,7 @@ class Marca {
 
   factory Marca.fromJson(Map<String, dynamic> map) {
     return Marca(
-      id: map['id'] as int,
+      id: map['id'] as int?,
       nome: map['nome'] as String,
     );
   }

@@ -29,7 +29,33 @@ class ProdutoController {
     // 3. POST /
     r.post('/', (Request request) async {
       final payload = await request.readAsString();
-      final data = jsonDecode(payload);
+
+      Map<String, dynamic> data;
+
+      try {
+        data = jsonDecode(payload);
+      } catch (e) {
+        return Response(
+          400, 
+          body: jsonEncode({'erro': 'JSON mal formatado. Verifique se não há valores vazios, vírgulas sobrando ou aspas faltando.'}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
+
+      List<String> erros = [];
+      
+      if (!data.containsKey('nome') || data['nome'].toString().trim().isEmpty) erros.add('O campo "nome" é obrigatório.');
+      if (!data.containsKey('categoria') || data['categoria'].toString().trim().isEmpty) erros.add('O campo "categoria" é obrigatório.');
+      if (!data.containsKey('preco') || data['preco'] == null) erros.add('O campo "preco" é obrigatório.');
+      if (!data.containsKey('marcaId') || data['marcaId'] == null) erros.add('O campo "marcaId" é obrigatório.');
+
+      if (erros.isNotEmpty) {
+        return Response(
+          400, 
+          body: jsonEncode({'erros': erros}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
       
       final novoProduto = Produto.fromJson(data);
       final produtoCriado = await repository.criar(novoProduto);
@@ -40,7 +66,32 @@ class ProdutoController {
     // 4. PUT /<id>
     r.put('/<id>', (Request request, String id) async {
       final payload = await request.readAsString();
-      final data = jsonDecode(payload);
+      Map<String, dynamic> data;
+
+      try {
+        data = jsonDecode(payload);
+      } catch (e) {
+        return Response(
+          400, 
+          body: jsonEncode({'erro': 'JSON mal formatado. Verifique se não há valores vazios, vírgulas sobrando ou aspas faltando.'}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
+
+      List<String> erros = [];
+      
+      if (!data.containsKey('nome') || data['nome'].toString().trim().isEmpty) erros.add('O campo "nome" é obrigatório.');
+      if (!data.containsKey('categoria') || data['categoria'].toString().trim().isEmpty) erros.add('O campo "categoria" é obrigatório.');
+      if (!data.containsKey('preco') || data['preco'] == null) erros.add('O campo "preco" é obrigatório.');
+      if (!data.containsKey('marcaId') || data['marcaId'] == null) erros.add('O campo "marcaId" é obrigatório.');
+
+      if (erros.isNotEmpty) {
+        return Response(
+          400, 
+          body: jsonEncode({'erros': erros}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
       
       final produtoAtualizado = await repository.atualizar(int.parse(id), Produto.fromJson(data));
       if (produtoAtualizado == null) {

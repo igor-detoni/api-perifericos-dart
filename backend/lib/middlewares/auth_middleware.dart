@@ -5,10 +5,9 @@ import 'package:dotenv/dotenv.dart';
 Middleware authMiddleware() {
   return (Handler innerHandler) {
     return (Request request) async {
-      if (request.method == 'GET') {
+      if (request.method == 'GET' || request.url.path == 'auth/login') {
         return innerHandler(request);
       }
-
       final authHeader = request.headers['authorization'];
 
       if (authHeader == null || !authHeader.startsWith('Bearer ')) {

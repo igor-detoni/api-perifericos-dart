@@ -31,11 +31,18 @@ class MarcaController {
     r.post('/', (Request request) async {
       final payload = await request.readAsString();
       final data = jsonDecode(payload);
+
+      if (!data.containsKey('nome') || data['nome'].toString().trim().isEmpty) {
+        return Response(
+          400, 
+          body: jsonEncode({'erro': 'O campo "nome" é obrigatório e não pode estar vazio.'}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
       
       final novaMarca = Marca.fromJson(data);
       final marcaCriada = await repository.criar(novaMarca);
       
-      // Status 201 Created
       return Response(201, body: jsonEncode(marcaCriada.toJson()), headers: {'content-type': 'application/json'});
     });
 
@@ -43,6 +50,14 @@ class MarcaController {
     r.put('/<id>', (Request request, String id) async {
       final payload = await request.readAsString();
       final data = jsonDecode(payload);
+
+      if (!data.containsKey('nome') || data['nome'].toString().trim().isEmpty) {
+        return Response(
+          400, 
+          body: jsonEncode({'erro': 'O campo "nome" é obrigatório e não pode estar vazio.'}), 
+          headers: {'content-type': 'application/json'}
+        );
+      }
       
       final marcaAtualizada = await repository.atualizar(int.parse(id), Marca.fromJson(data));
       if (marcaAtualizada == null) {
@@ -53,12 +68,25 @@ class MarcaController {
 
     // 5. DELETE /<id>
     r.delete('/<id>', (Request request, String id) async {
-      final removido = await repository.remover(int.parse(id));
-      if (!removido) {
-        return Response.notFound(jsonEncode({'erro': 'Marca não encontrada'}));
+      try {
+        final removido = await repository.remover(int.parse(id));
+        if (!removido) {
+          return Response.notFound(jsonEncode({'erro': 'Marca não encontrada'}));
+        }
+        return Response(204); 
+      } catch (e) {
+        if (e.toString().contains('23503') || e.toString().contains('violates foreign key constraint')) {
+          return Response(
+            400,
+            body: jsonEncode({'erro': 'Não é possível excluir esta marca porque existem produtos vinculados a ela.'}), 
+            headers: {'content-type': 'application/json'}
+          );
+        }
+        return Response.internalServerError(
+          body: jsonEncode({'erro': 'Erro interno ao tentar remover a marca.'}),
+          headers: {'content-type': 'application/json'}
+        );
       }
-      // Status 204 No Content
-      return Response(204); 
     });
 
     // ROTA EXTRA GET /marcas/<id>/produtos
