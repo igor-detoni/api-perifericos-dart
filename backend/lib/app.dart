@@ -4,6 +4,7 @@ import 'package:backend/controllers/marca_controller.dart';
 import 'package:backend/controllers/produto_controller.dart';
 import 'package:backend/controllers/auth_controller.dart';
 import 'package:backend/middlewares/auth_middleware.dart';
+import 'package:backend/middlewares/cors_middleware.dart';
 
 class App {
   Handler get handler {
@@ -18,6 +19,7 @@ class App {
     router.mount('/produtos', ProdutoController().router.call);
 
     final pipeline = Pipeline()
+        .addMiddleware(corsMiddleware())
         .addMiddleware(logRequests())
         .addMiddleware(authMiddleware())
         .addHandler(router.call);
