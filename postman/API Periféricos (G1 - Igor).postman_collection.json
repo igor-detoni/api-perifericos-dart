@@ -1,0 +1,357 @@
+{
+  "info": {
+    "_postman_id": "3ded1550-4035-45f7-be9d-43582ca56b86",
+    "name": "API Periféricos (G1 - Igor)",
+    "description": "API desenvolvida para gerenciamento de marcas e produtos de periféricos de computador.\n\n## Middleware simples de autenticação\n\nTodas as rotas de manipulação de dados (`POST`, `PUT`, `DELETE`) são protegidas por **JWT**. Necessário gerar o token na rota de Login e enviá-lo no cabeçalho de Autorização (_Bearer Token_).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "29622922"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "1. Login (Gerar Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "    console.log(\"Token JWT salvo automaticamente nas variáveis da coleção!\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"admin\",\n  \"senha\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Recebe as credenciais estáticas e devolve um token JWT válido por 1 hora.\n\n**O Postman está configurado para capturar o token desta resposta e injetar automaticamente em todas as outras rotas.**"
+          },
+          "response": []
+        }
+      ],
+      "description": "Rotas de autenticação e segurança da API."
+    },
+    {
+      "name": "Marcas",
+      "item": [
+        {
+          "name": "Listar Todas as Marcas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/marcas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas"
+              ]
+            },
+            "description": "Retorna um array JSON com todas as marcas cadastradas no banco de dados, ordenadas por ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Marca por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/marcas/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas",
+                "1"
+              ]
+            },
+            "description": "Busca uma marca específica com base no ID informado na URL."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Produtos por Marca",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/marcas/1/produtos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas",
+                "1",
+                "produtos"
+              ]
+            },
+            "description": "Rota de ligação entre a Entidade Pai e a Entidade Filho. Retorna todos os produtos que pertencem ao ID da marca informada."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Nova Marca",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Corsair\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/marcas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas"
+              ]
+            },
+            "description": "Cadastra uma nova marca no sistema.\n\n_Requer token JWT válido no cabeçalho._"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Marca",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Corsair Gaming\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/marcas/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas",
+                "1"
+              ]
+            },
+            "description": "Atualiza os dados de uma marca existente pelo ID.\n\n_Requer token JWT válido no cabeçalho._"
+          },
+          "response": []
+        },
+        {
+          "name": "Remover Marca",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/marcas/999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "marcas",
+                "999"
+              ]
+            },
+            "description": "Exclui uma marca do banco de dados.\n\n_Requer token JWT válido no cabeçalho._\n\n**Proteção de Integridade:**  \nRetorna `400 Bad Request` se tentar deletar uma marca que ainda tenha produtos vinculados a ela (Foreign Key Constraint)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento das Marcas (Entidade Pai)."
+    },
+    {
+      "name": "Produtos",
+      "item": [
+        {
+          "name": "Listar Todos os Produtos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/produtos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Retorna a lista completa de produtos cadastrados."
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Produto por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/produtos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "produtos",
+                "1"
+              ]
+            },
+            "description": "Busca os detalhes de um produto específico usando seu ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Novo Produto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Mousepad QcK Heavy\",\n  \"categoria\": \"Mousepad\",\n  \"preco\": 189.90,\n  \"marcaId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/produtos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Insere um novo produto vinculado a uma marca.\n\n_Requer token JWT válido no cabeçalho._"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Produto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Mousepad QcK Heavy XXL\",\n  \"categoria\": \"Mousepad\",\n  \"preco\": 220.00,\n  \"marcaId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/produtos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "produtos",
+                "1"
+              ]
+            },
+            "description": "Sobrescreve os dados de um produto existente.\n\n*Requer token JWT válido no cabeçalho.*"
+          },
+          "response": []
+        },
+        {
+          "name": "Remover Produto",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/produtos/999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "produtos",
+                "999"
+              ]
+            },
+            "description": "Exclui permanentemente um produto do banco de dados.\n\n_Requer token JWT válido no cabeçalho._"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gerenciamento dos Produtos (Entidade Filho)."
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
