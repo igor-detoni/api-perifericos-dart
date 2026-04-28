@@ -13,9 +13,11 @@ class Database {
     }
 
     final uri = Uri.parse(dbUrl);
+    
+    final isLocal = uri.host == 'localhost' || uri.host == '127.0.0.1';
 
     try {
-      print('Tentando conectar ao NeonDB...');
+      print('Tentando conectar ao banco de dados (${uri.host})...');
       connection = await Connection.open(
         Endpoint(
           host: uri.host,
@@ -25,11 +27,11 @@ class Database {
           port: uri.port != 0 ? uri.port : 5432,
         ),
         settings: ConnectionSettings(
-          sslMode: SslMode.require,
+          sslMode: isLocal ? SslMode.disable : SslMode.require,
           connectTimeout: Duration(seconds: 30),
         ),
       );
-      print('Conexão com o NeonDB estabelecida com sucesso!');
+      print('Conexão com o banco de dados estabelecida com sucesso!');
 
       await inicializarTabelas();
       
