@@ -61,3 +61,13 @@ INSERT INTO produtos (nome, categoria, preco, marcaId) VALUES
 Na raiz do projeto, na pasta `postman/`, temos o arquivo .json com a collection do Postman. 
 
 Importe este arquivo no seu Postman e siga as instruções dele.
+
+
+## Aviso sobre Segurança
+
+Só pra disclaimer, esse projeto tem caráter **acadêmico**. Por simplicidade, as credenciais 
+de autenticação ficaram hardcoded (`admin` / `1234`) 
+e não há persistência de usuários no banco de dados, é apenas um demonstrativo simples
+e adicional ao escopo original que o professor passou.
+
+Em um ambiente de produção, obviamente, isso não ocorreria.
