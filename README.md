@@ -60,7 +60,11 @@ Na tela de login, use as credenciais: `admin` / `1234`.
 ```sql
 INSERT INTO marcas (nome) VALUES ('Logitech'), ('Razer'), ('Redragon'), ('Corsair'), ('HyperX');
 
+<<<<<<< HEAD
 INSERT INTO produtos (nome, categoria, preco, marcaId) VALUES
+=======
+INSERT INTO produtos (nome, categoria, preco, marcaId) VALUES 
+>>>>>>> 66106e4ad7a3833ba01c303ff2b6b843e35fdda4
 ('Mouse G Pro X Superlight', 'Mouse', 899.90, 1),
 ('Teclado Mecânico G915', 'Teclado', 1299.00, 1),
 ('Mouse DeathAdder V3', 'Mouse', 450.00, 2),
@@ -72,6 +76,7 @@ INSERT INTO produtos (nome, categoria, preco, marcaId) VALUES
 ('Headset Cloud II', 'Headset', 550.00, 5);
 ```
 
+<<<<<<< HEAD
 ## Telas do app
 
 | Tela | Descrição |
@@ -84,3 +89,30 @@ INSERT INTO produtos (nome, categoria, preco, marcaId) VALUES
 ## Aviso de segurança
 
 Projeto de caráter acadêmico. Credenciais hardcoded (`admin` / `1234`) apenas para demonstração.
+=======
+### 3. Rodando o Servidor (Backend)
+1. Dentro da pasta `backend` baixe as dependências: `dart pub get`
+2. Inicie o servidor: `dart run bin/server.dart`
+3. Mantenha o terminal aberto.
+
+### 4. Rodando o App (Frontend)
+1. Em um novo terminal, dentro da pasta `frontend`, também baixe as dependências `flutter pub get`
+2. Inicie a aplicação no navegador: `flutter run -d chrome`
+
+---
+
+## Testes da API (Postman)
+Na raiz do projeto, na pasta `postman/`, temos o arquivo .json com a collection do Postman. 
+
+Importe este arquivo no seu Postman e siga as instruções dele.
+
+
+## Aviso sobre Segurança
+
+Só pra disclaimer, esse projeto tem caráter **acadêmico**. Por simplicidade, as credenciais 
+de autenticação ficaram hardcoded (`admin` / `1234`) 
+e não há persistência de usuários no banco de dados, é apenas um demonstrativo simples
+e adicional ao escopo original que o professor passou.
+
+Em um ambiente de produção, obviamente, isso não ocorreria.
+>>>>>>> 66106e4ad7a3833ba01c303ff2b6b843e35fdda4
